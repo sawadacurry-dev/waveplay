@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+/*
+ * WAVEPLAY デザイントークン
+ * Figmaのダークテーマ(ネイビー背景 + スカイブルーのアクセント)をそのまま
+ * CSS変数として定義し、Tailwind v4の @theme で参照できるようにする。
+ */
+:root {
+  --background: #0a0e1a; /* ページ全体の背景 */
+  --surface: #0f172a; /* カード等の面 */
+  --foreground: #f1f5f9; /* 基本テキスト */
+  --font-sans: var(--font-noto-sans-jp), var(--font-inter), sans-serif;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* フォーカスリングをブランドカラーで統一(アクセシビリティ) */
+:focus-visible {
+  outline-color: #38bdf8;
+}
