@@ -1,4 +1,9 @@
-import { SPORT_LABELS, type HomeStats, type Match } from "@/types/match";
+import {
+  SPORT_LABELS,
+  type HomeStats,
+  type Match,
+  type Tournament,
+} from "@/types/match";
 
 /**
  * MVP段階ではモックデータを返す。
@@ -10,9 +15,19 @@ import { SPORT_LABELS, type HomeStats, type Match } from "@/types/match";
 const IVS_DEMO_PLAYBACK_URL =
   "https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8";
 
-// ジャクソンさんの実チャンネル(動作確認用)
+/**
+ * 自分で作成したIVSチャンネルの再生URL。
+ * `.env.local` に NEXT_PUBLIC_IVS_PLAYBACK_URL を設定すると、注目試合が
+ * そのチャンネルの配信を再生する。未設定ならAWSのデモURLにフォールバックする。
+ *
+ * このファイルは検索画面(クライアントコンポーネント)からも読まれるため、
+ * 環境変数はビルド時にバンドルへ埋め込まれる NEXT_PUBLIC_ 接頭辞が必要。
+ * IVSの再生URLはプレイヤーに埋め込んで配布する前提の公開情報なので、
+ * クライアントに露出しても問題ない(ただしAWSアカウントIDを含むため、
+ * ソースに直接書かず環境変数に逃がしている)。
+ */
 const MY_CHANNEL_PLAYBACK_URL =
-  "https://45bff89f2ab3.ap-northeast-1.playback.live-video.net/api/video/v1/ap-northeast-1.804838452628.channel.tQFfTvwCNMoC.m3u8";
+  process.env.NEXT_PUBLIC_IVS_PLAYBACK_URL || IVS_DEMO_PLAYBACK_URL;
 
 const MOCK_MATCHES: Match[] = [
   {
@@ -212,7 +227,13 @@ export async function getArchives(): Promise<Match[]> {
 }
 
 export async function getArchiveById(id: string): Promise<Match | undefined> {
-  return MOCK_ARCHIVES.find((m) => m.id === id);
+  // 検索結果やスケジュールに出てくる「録画済みの試合」もアーカイブ詳細として
+  // 開けるようにする。アーカイブ一覧に無い場合は試合データ側からも探す。
+  // (これが無いと /archive/match-006 のようなURLが404になる)
+  return (
+    MOCK_ARCHIVES.find((m) => m.id === id) ??
+    MOCK_MATCHES.find((m) => m.id === id && m.status === "archived")
+  );
 }
 
 export async function searchAll(query: string): Promise<Match[]> {
@@ -238,11 +259,58 @@ export async function searchAll(query: string): Promise<Match[]> {
   });
 }
 
+export async function getTournaments(): Promise<Tournament[]> {
+  // MVPでは大会を独立したエンティティとして持たず、試合の tournamentName で
+  // グルーピングして組み立てている。Phase2で大会APIができたら、戻り値の型を
+  // 変えずにこの関数の中身だけを差し替える。
+  const groups = new Map<string, Match[]>();
+
+  for (const match of MOCK_MATCHES) {
+    const existing = groups.get(match.tournamentName);
+    if (existing) existing.push(match);
+    else groups.set(match.tournamentName, [match]);
+  }
+
+  const tournaments = [...groups.entries()].map(([name, matches]) => {
+    const liveCount = matches.filter((m) => m.status === "live").length;
+    const hasUpcoming = matches.some((m) => m.status === "upcoming");
+    const earliest = matches.reduce((a, b) =>
+      a.startTime <= b.startTime ? a : b
+    );
+
+    return {
+      // 大会側にIDが無いため、その大会で最も早い試合のIDから安定したIDを作る
+      id: `tour-${earliest.id}`,
+      name,
+      sport: earliest.sport,
+      venue: earliest.venue,
+      venueCount: new Set(
+        matches.map((m) => `${m.venue.prefecture}/${m.venue.name}`)
+      ).size,
+      matchCount: matches.length,
+      liveCount,
+      startTime: earliest.startTime,
+      status: liveCount > 0 ? "live" : hasUpcoming ? "upcoming" : "archived",
+    } satisfies Tournament;
+  });
+
+  // 配信中の大会を先頭に、あとは開始が早い順
+  return tournaments.sort(
+    (a, b) =>
+      b.liveCount - a.liveCount || a.startTime.localeCompare(b.startTime)
+  );
+}
+
 export async function getHomeStats(): Promise<HomeStats> {
+  // 固定値を返すと画面に並ぶカードの枚数とズレるため、モックデータから集計する。
+  // 実API化の際も「一覧と統計が同じソースを見る」この形を保つこと。
+  const live = MOCK_MATCHES.filter((m) => m.status === "live");
+
   return {
-    liveCount: 4,
-    todayMatchCount: 9,
-    registeredSportsCount: 5,
-    totalViewers: 7297,
+    liveCount: live.length,
+    todayMatchCount: MOCK_MATCHES.length,
+    // サービスが対応しているスポーツ種目の数(試合が無い種目も含む)
+    registeredSportsCount: Object.keys(SPORT_LABELS).length,
+    totalViewers: live.reduce((sum, m) => sum + (m.viewerCount ?? 0), 0),
   };
 }

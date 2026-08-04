@@ -1,6 +1,8 @@
 import Link from "next/link";
-import { Bell, CalendarDays, Radio, Search, Trophy, Waves, Archive } from "lucide-react";
+import { CalendarDays, Radio, Search, Trophy, Waves, Archive } from "lucide-react";
 import { HeaderAuthArea } from "@/components/layout/HeaderAuthArea";
+import { NotificationBell } from "@/components/layout/NotificationBell";
+import { getNotifications } from "@/lib/api/notifications";
 
 const NAV_ITEMS = [
   { href: "/", label: "ライブ中継", icon: Radio },
@@ -9,7 +11,11 @@ const NAV_ITEMS = [
   { href: "/tournaments", label: "大会情報", icon: Trophy },
 ];
 
-export function Header({ liveCount }: { liveCount: number }) {
+// 通知は全ページ共通で必要になるため、各ページに取得を書かせず
+// ヘッダー自身がサーバーコンポーネントとして取りに行く。
+export async function Header({ liveCount }: { liveCount: number }) {
+  const notifications = await getNotifications();
+
   return (
     <header className="sticky top-0 z-40 border-b border-white/5 bg-slate-950/80 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
@@ -43,12 +49,7 @@ export function Header({ liveCount }: { liveCount: number }) {
           >
             <Search className="h-4 w-4" />
           </Link>
-          <button
-            aria-label="通知"
-            className="rounded-lg p-2 text-slate-400 transition hover:bg-white/5 hover:text-slate-100"
-          >
-            <Bell className="h-4 w-4" />
-          </button>
+          <NotificationBell notifications={notifications} />
           <HeaderAuthArea />
         </div>
       </div>

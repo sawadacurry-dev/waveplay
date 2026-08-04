@@ -57,6 +57,19 @@ export interface Match {
   archiveViews?: number;
 }
 
+// 大会(同一 tournamentName の試合をまとめた単位)
+export interface Tournament {
+  id: string;
+  name: string;
+  sport: SportCategory;
+  venue: Venue; // 代表会場(最も早い試合の会場)
+  venueCount: number; // 大会全体の会場数。2以上なら「他N会場」と補足表示する
+  matchCount: number;
+  liveCount: number;
+  startTime: string; // 大会内で最も早い試合の開始時刻 (ISO8601)
+  status: BroadcastStatus;
+}
+
 // トップページ集計統計
 export interface HomeStats {
   liveCount: number;

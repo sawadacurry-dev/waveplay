@@ -18,29 +18,69 @@ http://localhost:3000 で確認できます。
 
 ## 実際のIVSチャンネルに繋ぐには
 
-現在 `lib/api/matches.ts` 内の `IVS_DEMO_PLAYBACK_URL` は、
-AWSが公式に公開しているデモ用の再生URLです(誰でも動作確認できます)。
+デフォルトでは、AWSが公式に公開しているデモ用の再生URLを使うため、
+設定なしでプレイヤーの動作確認ができます。
 
 自分のチャンネルに切り替える場合は、AWSコンソールでIVSチャンネルを作成し、
-発行された `Playback URL` を同じ変数、または各 `Match` オブジェクトの
-`playbackUrl` に設定してください。プレイヤー側 (`components/player/IVSPlayer.tsx`)
-の実装は変更不要です。
+発行された `Playback URL` を `.env.local` に設定してください。
 
-## 現在のMVPスコープ
+```bash
+cp .env.example .env.local
+# NEXT_PUBLIC_IVS_PLAYBACK_URL に Playback URL を貼り付ける
+```
 
-実装済み:
-- トップページ(ヒーロー注目試合 / ライブ配信中カード一覧 / 本日のスケジュール / 統計バー)
-- ライブ視聴ページ(AWS IVS Player SDKによる実再生、スコア・視聴者数表示)
-- スケジュール一覧(スポーツ種目タブでの絞り込み)
-- アーカイブ一覧・詳細ページ(モックデータ、実再生はPhase2)
-- レスポンシブ対応、キーボードフォーカスの可視化
+プレイヤー側 (`components/player/IVSPlayer.tsx`) の実装は変更不要です。
+試合ごとに別チャンネルを割り当てたい場合は、各 `Match` オブジェクトの
+`playbackUrl` に直接URLを設定します。
 
-Phase2以降(未実装、意図的にスコープ外):
-- 実データAPI連携(現在は `lib/api/matches.ts` のモック関数)
+## 現在の実装状況
+
+### 画面(全12ルート)
+
+| ルート | 内容 | データ |
+|---|---|---|
+| `/` | トップ(ヒーロー注目試合 / ライブ配信中一覧 / 本日のスケジュール / 統計バー) | モック |
+| `/live/[matchId]` | ライブ視聴。AWS IVS Player SDKによる**実再生**、スコア・視聴者数・ライブコメント | 配信は実、その他モック |
+| `/schedule` | スケジュール一覧(スポーツ種目タブで絞り込み) | モック |
+| `/archive` | アーカイブ一覧 | モック |
+| `/archive/[videoId]` | アーカイブ詳細(**再生は未実装**、プレースホルダー表示) | モック |
+| `/search` | 大会名・選手名・会場名の横断検索(デバウンス250ms、URLに`?q=`反映) | モック配列の部分一致 |
+| `/login` | ログインフォーム | 疑似認証 |
+| `/account` | アカウント情報・契約プラン表示 | 疑似認証 |
+| `/pricing` | 料金プラン(ベーシック ¥980 / プレミアム ¥1,980) | 静的 |
+| `/checkout` | 決済確認画面 | **決済は発生しない**(800msのダミー処理) |
+| `/tournaments` | 大会一覧(スポーツ種目タブで絞り込み、カードから検索経由で試合一覧へ) | モック |
+
+レスポンシブ対応、キーボードフォーカスの可視化は全画面で対応済み。
+
+### モックである箇所(Phase2で差し替え)
+
+いずれも「差し替え時にUI側を変更せずに済む」形に切り出してあります。
+
+- **データ取得** — `lib/api/matches.ts`。関数のシグネチャ(戻り値の型)を変えずに、
+  中身だけ `fetch()` 呼び出しに置き換えれば実API化できる。
+- **認証** — `lib/auth/AuthProvider.tsx`。メールアドレスを受け取って localStorage に
+  保存するだけで、パスワード検証も有効期限もない。NextAuth.js / Amazon Cognito /
+  Clerk 等に置き換える際は、このファイルの実装だけを差し替える。
+- **決済** — `components/pricing/CheckoutView.tsx`。`setTimeout` でプラン契約状態を
+  書き換えるのみ。本番はStripe Checkout Sessionへのリダイレクト方式を想定
+  (カード番号の入力欄を自前で持たず、PCI DSS対応範囲を最小化する)。
+- **ライブコメント** — `components/live/LiveCommentPanel.tsx`。そのブラウザタブの中で
+  完結するローカル状態で、他の視聴者には共有されない。リアルタイム共有には
+  WebSocket(API Gateway WebSocket API等)やPub/Subのバックエンドが別途必要。
+- **通知** — `lib/api/notifications.ts` が試合データから通知を組み立てている。
+  実際は「フォローした大会・選手」に紐づくサーバー側の通知テーブルを引くことになる。
+  既読状態は `components/layout/NotificationBell.tsx` のローカル状態で、リロードで戻る。
+- **大会** — 大会を独立したエンティティとして持たず、試合の `tournamentName` で
+  グルーピングして `getTournaments()` が組み立てている。
+
+### 未実装(意図的にスコープ外)
+
 - アーカイブの実再生
-- 有料プラン・決済、視聴登録の実処理
-- 通知機能、検索機能
-- 選手プロフィール、大会詳細ページ
+- 大会詳細ページ(組み合わせ表・順位表)。一覧カードは検索画面に大会名を渡す形で代用
+- 選手プロフィールページ(`/players` — フッターにリンクがあるが未実装で404)
+- 視聴履歴、お気に入り、フォロー
+- スケジュール行の「通知」ボタン(表示のみで動作しない)
 
 ## ディレクトリ構成
 
@@ -48,17 +88,23 @@ Phase2以降(未実装、意図的にスコープ外):
 app/            ルーティング(App Router)
 components/
   ui/           汎用UIパーツ(Button, Badge, Card)
-  layout/       Header, Footer
+  layout/       Header, Footer, HeaderAuthArea, NotificationBell
   player/       IVSPlayer, ViewerCount
-  match/        HeroMatchCard, LiveMatchCard, ScoreBoard, ScheduleRow等
+  match/        HeroMatchCard, LiveMatchCard, ScoreBoard, ScheduleRow, StatsBar等
   archive/      ArchiveCard
+  auth/         LoginForm, AccountView
+  pricing/      PricingTable, CheckoutView
+  search/       SearchView
+  live/         LiveCommentPanel
+  tournament/   TournamentCard, TournamentList
 lib/
   ivs/          IVS Player SDK初期化ヘルパー
   api/          データ取得(現在はモック、将来API化)
+  auth/         疑似認証コンテキスト(AuthProvider)
   utils.ts      cn()等の共通関数
 hooks/
   useIVSPlayer.ts  プレイヤーの状態管理フック
-types/          Match, IVSPlayer等の型定義
+types/          Match, Tournament, IVSPlayer, User/Plan, AppNotification等の型定義
 constants/      スポーツ種目のラベル・カラー定義
 ```
 
@@ -68,3 +114,11 @@ constants/      スポーツ種目のラベル・カラー定義
 フォントは英数字用に Inter、日本語用に Noto Sans JP を `next/font/google` で
 最適化配信。カラーはFigmaのダークテーマ(ネイビー背景 + スカイブルーのアクセント)を
 そのまま踏襲し、スポーツ種目ごとのバッジ色は `constants/sports.ts` に集約。
+
+## 開発時の確認コマンド
+
+```bash
+npm run lint          # ESLint
+npx tsc --noEmit      # 型チェック
+npm run build         # 本番ビルド
+```
