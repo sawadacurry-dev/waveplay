@@ -2,6 +2,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ScheduleList } from "@/components/match/ScheduleList";
 import { getHomeStats, getTodaySchedule } from "@/lib/api/matches";
+import { formatDateJST } from "@/lib/utils";
 
 export default async function SchedulePage() {
   const [schedule, stats] = await Promise.all([
@@ -19,7 +20,7 @@ export default async function SchedulePage() {
             本日の試合スケジュール
           </h1>
           <p className="mb-6 text-sm text-slate-500">
-            {new Date().toLocaleDateString("ja-JP", {
+            {formatDateJST(new Date(), {
               year: "numeric",
               month: "long",
               day: "numeric",

@@ -5,14 +5,7 @@ import { SPORT_LABELS } from "@/types/match";
 import { SPORT_BADGE_STYLES } from "@/constants/sports";
 import { LiveBadge, SportBadge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
-
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString("ja-JP", {
-    month: "long",
-    day: "numeric",
-    timeZone: "Asia/Tokyo",
-  });
-}
+import { formatDateJST } from "@/lib/utils";
 
 export function TournamentCard({ tournament }: { tournament: Tournament }) {
   return (
@@ -45,7 +38,11 @@ export function TournamentCard({ tournament }: { tournament: Tournament }) {
           </span>
           <span className="flex items-center gap-1.5">
             <CalendarDays className="h-3.5 w-3.5" />
-            {formatDate(tournament.startTime)}開幕
+            {formatDateJST(tournament.startTime, {
+              month: "long",
+              day: "numeric",
+            })}
+            開幕
           </span>
           <span className="flex items-center gap-1.5">
             <Tv className="h-3.5 w-3.5" />

@@ -5,15 +5,7 @@ import { SPORT_LABELS } from "@/types/match";
 import { SPORT_BADGE_STYLES } from "@/constants/sports";
 import { SportBadge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { cn } from "@/lib/utils";
-
-function formatTime(iso: string) {
-  return new Date(iso).toLocaleTimeString("ja-JP", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
-}
+import { cn, formatTimeJST } from "@/lib/utils";
 
 export function ScheduleRow({ match }: { match: Match }) {
   const isLive = match.status === "live";
@@ -34,7 +26,7 @@ export function ScheduleRow({ match }: { match: Match }) {
             isLive ? "text-red-400" : "text-slate-300"
           )}
         >
-          {formatTime(match.startTime)}
+          {formatTimeJST(match.startTime)}
         </span>
       </div>
 
