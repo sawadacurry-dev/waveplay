@@ -1,4 +1,4 @@
-import type { HomeStats, Match } from "@/types/match";
+import { SPORT_LABELS, type HomeStats, type Match } from "@/types/match";
 
 /**
  * MVP段階ではモックデータを返す。
@@ -6,10 +6,13 @@ import type { HomeStats, Match } from "@/types/match";
  * 変えずに中身だけ fetch() 呼び出しに置き換えれば良いように設計している。
  */
 
-// AWS IVSが公式に公開しているデモ再生用URL。
-// 自分のチャンネルが用意できたら、この値を playbackUrl に差し替えるだけでOK。
+// AWSが公式に公開しているデモ用の再生URL(動作確認用フォールバック)
 const IVS_DEMO_PLAYBACK_URL =
   "https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8";
+
+// ジャクソンさんの実チャンネル(動作確認用)
+const MY_CHANNEL_PLAYBACK_URL =
+  "https://45bff89f2ab3.ap-northeast-1.playback.live-video.net/api/video/v1/ap-northeast-1.804838452628.channel.tQFfTvwCNMoC.m3u8";
 
 const MOCK_MATCHES: Match[] = [
   {
@@ -23,7 +26,7 @@ const MOCK_MATCHES: Match[] = [
     score: { home: 21, away: 18, periodLabel: "第2セット" },
     venue: { prefecture: "神奈川", name: "湘南海岸" },
     viewerCount: 4821,
-    playbackUrl: IVS_DEMO_PLAYBACK_URL,
+    playbackUrl: MY_CHANNEL_PLAYBACK_URL,
   },
   {
     id: "match-002",
@@ -210,6 +213,29 @@ export async function getArchives(): Promise<Match[]> {
 
 export async function getArchiveById(id: string): Promise<Match | undefined> {
   return MOCK_ARCHIVES.find((m) => m.id === id);
+}
+
+export async function searchAll(query: string): Promise<Match[]> {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+
+  const [live, archives] = await Promise.all([getTodaySchedule(), getArchives()]);
+  const all = [...live, ...archives];
+
+  return all.filter((m) => {
+    const haystack = [
+      m.tournamentName,
+      m.round ?? "",
+      m.home.name,
+      m.away.name,
+      m.venue.name,
+      m.venue.prefecture,
+      SPORT_LABELS[m.sport],
+    ]
+      .join(" ")
+      .toLowerCase();
+    return haystack.includes(q);
+  });
 }
 
 export async function getHomeStats(): Promise<HomeStats> {

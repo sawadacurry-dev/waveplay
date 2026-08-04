@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Bell, CalendarDays, Radio, Search, Trophy, Waves, Archive } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { HeaderAuthArea } from "@/components/layout/HeaderAuthArea";
 
 const NAV_ITEMS = [
   { href: "/", label: "ライブ中継", icon: Radio },
@@ -36,19 +36,20 @@ export function Header({ liveCount }: { liveCount: number }) {
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-red-500" />
             {liveCount}件 配信中
           </span>
-          <button
+          <Link
+            href="/search"
             aria-label="検索"
             className="rounded-lg p-2 text-slate-400 transition hover:bg-white/5 hover:text-slate-100"
           >
             <Search className="h-4 w-4" />
-          </button>
+          </Link>
           <button
             aria-label="通知"
             className="rounded-lg p-2 text-slate-400 transition hover:bg-white/5 hover:text-slate-100"
           >
             <Bell className="h-4 w-4" />
           </button>
-          <Button className="hidden sm:inline-flex">視聴登録</Button>
+          <HeaderAuthArea />
         </div>
       </div>
     </header>
