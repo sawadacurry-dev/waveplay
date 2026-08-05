@@ -97,7 +97,7 @@ export function IVSPlayer({ playbackUrl, autoplay = true, className }: IVSPlayer
               開始すると自動で再生されます
             </p>
           </div>
-          <span className="flex items-center gap-1.5 text-xs text-slate-600">
+          <span className="flex items-center gap-1.5 text-xs text-slate-500">
             <Loader2 className="h-3 w-3 animate-spin" />
             配信の開始を待っています
           </span>

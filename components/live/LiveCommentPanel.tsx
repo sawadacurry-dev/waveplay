@@ -70,7 +70,7 @@ export function LiveCommentPanel() {
           onChange={(e) => setDraft(e.target.value)}
           placeholder={user ? "コメントを入力" : "コメントにはログインが必要です"}
           disabled={!user}
-          className="flex-1 rounded-lg border border-white/10 bg-slate-950/60 px-3 py-2 text-sm text-slate-100 outline-none placeholder:text-slate-600 focus-visible:border-sky-500/50 disabled:opacity-50"
+          className="flex-1 rounded-lg border border-white/10 bg-slate-950/60 px-3 py-2 text-sm text-slate-100 outline-none placeholder:text-slate-500 focus-visible:border-sky-500/50 disabled:opacity-50"
         />
         <Button type="submit" disabled={!user} aria-label="送信">
           <Send className="h-4 w-4" />

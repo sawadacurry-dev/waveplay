@@ -22,7 +22,7 @@ export default async function TournamentsPage() {
 
           <TournamentList tournaments={tournaments} />
 
-          <p className="mt-10 text-center text-xs text-slate-600">
+          <p className="mt-10 text-center text-xs text-slate-500">
             ※ 組み合わせ表・順位表を含む大会詳細ページはPhase2で対応予定です。
           </p>
         </div>

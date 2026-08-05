@@ -57,7 +57,7 @@ export function Footer() {
               {col.links.map((link) => (
                 <li key={link.href}>
                   {"comingSoon" in link && link.comingSoon ? (
-                    <span className="flex items-center gap-1.5 text-sm text-slate-600">
+                    <span className="flex items-center gap-1.5 text-sm text-slate-500">
                       {link.label}
                       <span className="rounded bg-white/5 px-1.5 py-0.5 text-[10px] text-slate-500">
                         準備中

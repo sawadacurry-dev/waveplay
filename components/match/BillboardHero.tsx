@@ -71,7 +71,7 @@ export function BillboardHero({ match }: { match: Match }) {
           {match.score && (
             <p className="mt-4 flex items-center gap-3 text-2xl font-black tabular-nums text-sky-400 sm:text-3xl">
               {match.score.home}
-              <span className="text-slate-600">-</span>
+              <span className="text-slate-500">-</span>
               {match.score.away}
               {match.score.periodLabel && (
                 <span className="rounded bg-white/5 px-2 py-1 text-xs font-semibold text-slate-300">

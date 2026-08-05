@@ -67,7 +67,7 @@ export function LoginForm() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className="w-full rounded-lg border border-white/10 bg-slate-950/60 px-3.5 py-2.5 text-sm text-slate-100 outline-none placeholder:text-slate-600 focus-visible:border-sky-500/50"
+              className="w-full rounded-lg border border-white/10 bg-slate-950/60 px-3.5 py-2.5 text-sm text-slate-100 outline-none placeholder:text-slate-500 focus-visible:border-sky-500/50"
             />
           </div>
 
@@ -85,7 +85,7 @@ export function LoginForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full rounded-lg border border-white/10 bg-slate-950/60 px-3.5 py-2.5 text-sm text-slate-100 outline-none placeholder:text-slate-600 focus-visible:border-sky-500/50"
+              className="w-full rounded-lg border border-white/10 bg-slate-950/60 px-3.5 py-2.5 text-sm text-slate-100 outline-none placeholder:text-slate-500 focus-visible:border-sky-500/50"
             />
           </div>
 
@@ -104,7 +104,7 @@ export function LoginForm() {
         </p>
       </div>
 
-      <p className="mt-4 text-center text-xs text-slate-600">
+      <p className="mt-4 text-center text-xs text-slate-500">
         ※現在は開発中のデモです。実際のメール認証は行われません。
       </p>
     </div>

@@ -109,7 +109,7 @@ export function CheckoutView() {
         {isProcessing ? "処理中..." : "決済画面へ進む"}
       </Button>
 
-      <p className="text-center text-xs text-slate-600">
+      <p className="text-center text-xs text-slate-500">
         ※現在は開発中のデモです。実際の決済は発生しません。
       </p>
     </div>

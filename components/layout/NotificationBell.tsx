@@ -118,7 +118,7 @@ export function NotificationBell({
                           )}
                         </p>
                         <p className="line-clamp-2 text-xs text-slate-400">{n.body}</p>
-                        <p className="mt-1 text-xs text-slate-600">{n.timeLabel}</p>
+                        <p className="mt-1 text-xs text-slate-500">{n.timeLabel}</p>
                       </div>
                     </Link>
                   </li>
@@ -127,7 +127,7 @@ export function NotificationBell({
             </ul>
           )}
 
-          <p className="border-t border-white/5 px-4 py-2.5 text-center text-xs text-slate-600">
+          <p className="border-t border-white/5 px-4 py-2.5 text-center text-xs text-slate-500">
             ※ 通知はデモ用のサンプルです
           </p>
         </div>

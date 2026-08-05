@@ -85,7 +85,7 @@ export function MatchTile({ match }: { match: Match }) {
             : `${match.home.name} vs ${match.away.name}`}
         </p>
         {match.archiveViews !== undefined && (
-          <p className="flex items-center gap-1 text-xs text-slate-600">
+          <p className="flex items-center gap-1 text-xs text-slate-500">
             <Eye className="h-3 w-3" />
             {formatViewerCount(match.archiveViews)} 回視聴
           </p>

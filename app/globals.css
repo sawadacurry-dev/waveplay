@@ -34,8 +34,13 @@
   --color-slate-100: #f2f4f6;
   --color-slate-200: #dfe2e6;
   --color-slate-300: #bcc1c8;
-  --color-slate-400: #8f959e;
-  --color-slate-500: #6b717a;
+  /*
+   * 400/500 は本文まわりの補助テキストに使うため、背景(#08090b / カード面
+   * #121316)に対して WCAG AA の 4.5:1 を満たす明るさにしてある。
+   * 600 以下はコントラストが足りないので、罫線・装飾専用とし文字色には使わない。
+   */
+  --color-slate-400: #a5abb4;
+  --color-slate-500: #868d96;
   --color-slate-600: #464b53;
   --color-slate-700: #2e3238;
   --color-slate-800: #1d2024;
