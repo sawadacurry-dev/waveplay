@@ -32,8 +32,12 @@ export default function RootLayout({
       lang="ja"
       className={`${inter.variable} ${notoSansJP.variable} h-full antialiased`}
     >
-      {/* pb-16 は固定のボトムタブバー(md未満のみ表示)に隠れないための余白 */}
-      <body className="flex min-h-full flex-col bg-background pb-16 text-foreground md:pb-0">
+      {/*
+        固定のボトムタブバー(md未満のみ表示)に内容が隠れないための余白。
+        タブバー自身がセーフエリア(iPhoneのホームインジケータ)ぶん高くなるので、
+        こちらも同じ量を足しておかないと、その端末だけ下端が隠れる。
+      */}
+      <body className="flex min-h-full flex-col bg-background pb-[calc(4rem+env(safe-area-inset-bottom))] text-foreground md:pb-0">
         <AuthProvider>
           {children}
           <BottomTabBar />

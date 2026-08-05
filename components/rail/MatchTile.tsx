@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Clock, Eye, Play, Users } from "lucide-react";
 import type { Match } from "@/types/match";
 import { SPORT_LABELS } from "@/types/match";
-import { SPORT_BADGE_STYLES } from "@/constants/sports";
+import { SPORT_TINT_STYLES } from "@/constants/sports";
 import { formatTimeJST, formatViewerCount } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
@@ -26,7 +26,7 @@ export function MatchTile({ match }: { match: Match }) {
         <div
           className={cn(
             "absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-900 transition duration-300 group-hover/tile:scale-105",
-            SPORT_BADGE_STYLES[match.sport].split(" ")[0]
+            SPORT_TINT_STYLES[match.sport]
           )}
         />
 

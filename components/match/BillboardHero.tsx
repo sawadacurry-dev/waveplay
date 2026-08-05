@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Info, MapPin, Play, Users } from "lucide-react";
 import type { Match } from "@/types/match";
 import { SPORT_LABELS } from "@/types/match";
-import { SPORT_BADGE_STYLES } from "@/constants/sports";
+import { SPORT_TINT_STYLES } from "@/constants/sports";
 import { formatViewerCount } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
@@ -19,7 +19,7 @@ export function BillboardHero({ match }: { match: Match }) {
       <div
         className={cn(
           "absolute inset-0 opacity-40",
-          SPORT_BADGE_STYLES[match.sport].split(" ")[0]
+          SPORT_TINT_STYLES[match.sport]
         )}
       />
       <div className="absolute -left-40 top-0 h-[28rem] w-[28rem] rounded-full bg-sky-500/20 blur-3xl" />
@@ -29,7 +29,12 @@ export function BillboardHero({ match }: { match: Match }) {
       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/30 to-transparent" />
 
-      <div className="relative flex min-h-[60vh] items-end px-4 pb-10 pt-24 sm:min-h-[70vh] sm:px-6 lg:px-10">
+      {/*
+        下余白(pb)は、トップページでレールを重ねる負のマージンより必ず大きくすること。
+        小さいとレールのコンテナがCTAの上に乗り、ボタンが押せなくなる。
+        現在: 重なり -mt-12(48px) / -mt-16(64px) に対して pb-24(96px) / pb-28(112px)。
+      */}
+      <div className="relative flex min-h-[60vh] items-end px-4 pb-24 pt-24 sm:min-h-[70vh] sm:px-6 sm:pb-28 lg:px-10">
         <div className="max-w-2xl">
           <div className="mb-3 flex flex-wrap items-center gap-2">
             <span className="flex items-center gap-1.5 rounded bg-red-600 px-2 py-1 text-[11px] font-bold tracking-wide text-white">
@@ -47,11 +52,15 @@ export function BillboardHero({ match }: { match: Match }) {
             )}
           </div>
 
+          {/*
+            スペースを明示的に入れているのは、読み上げ時に
+            「鈴木vs山田」と繋がって聞こえるのを避けるため
+          */}
           <h1 className="text-3xl font-black leading-tight text-white sm:text-5xl">
-            {match.home.name}
-            <span className="mx-3 text-xl font-bold text-slate-400 sm:text-3xl">
+            {match.home.name}{" "}
+            <span className="mx-1 text-xl font-bold text-slate-400 sm:text-3xl">
               vs
-            </span>
+            </span>{" "}
             {match.away.name}
           </h1>
 

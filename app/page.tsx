@@ -33,9 +33,12 @@ export default async function HomePage() {
 
         {/*
           ビルボードの下端にレールを少し重ねて、スクロールできることを示す。
+          このコンテナは z-10 でヒーローの上に乗るため、重なりぶんの高さは
+          ヒーロー側のクリックを奪う。BillboardHero の下余白(pb-24 / sm:pb-28)より
+          必ず小さい値にすること。
           ヒーローが無い場合は重ねる相手がいないので通常の余白にする。
         */}
-        <div className={heroMatch ? "relative z-10 -mt-16 sm:-mt-24" : "pt-8"}>
+        <div className={heroMatch ? "relative z-10 -mt-12 sm:-mt-16" : "pt-8"}>
           {liveMatches.length > 0 ? (
             <ContentRail title="ライブ配信中" moreHref="/schedule">
               {liveMatches.map((match) => (

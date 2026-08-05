@@ -110,8 +110,14 @@ function RailArrow({
       onClick={onClick}
       aria-label={isLeft ? "前へスクロール" : "次へスクロール"}
       className={cn(
-        "absolute top-0 z-10 hidden h-full w-10 items-center justify-center bg-gradient-to-r from-slate-950 to-transparent text-slate-100 opacity-0 transition",
-        "group-hover/rail:opacity-100 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-sky-400",
+        "absolute top-0 z-10 hidden h-full w-10 items-center justify-center bg-gradient-to-r from-slate-950 to-transparent text-slate-100 transition",
+        // 見えていない間はクリックも奪わないようにする。
+        // pointer-events-none にしないと、透明な矢印が端のタイルの上に乗り、
+        // タイルを押したつもりがスクロールしてしまう。
+        "pointer-events-none opacity-0",
+        "group-hover/rail:pointer-events-auto group-hover/rail:opacity-100",
+        // キーボード操作では pointer-events に関わらずEnterで押せる
+        "focus-visible:opacity-100 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-sky-400",
         // タッチ端末では矢印を出さず、スワイプに任せる
         "lg:flex",
         isLeft ? "left-0" : "right-0 bg-gradient-to-l"
