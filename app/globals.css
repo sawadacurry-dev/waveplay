@@ -2,13 +2,19 @@
 
 /*
  * WAVEPLAY デザイントークン
- * Figmaのダークテーマ(ネイビー背景 + スカイブルーのアクセント)をそのまま
- * CSS変数として定義し、Tailwind v4の @theme で参照できるようにする。
+ *
+ * ビーチスポーツというテーマに合わせ、汎用的なダークダッシュボード配色から
+ * 「深い海 + ターコイズ + 夕焼けのコーラル」へトーンを寄せている。
+ *
+ * 各コンポーネントは slate-* / sky-* のユーティリティを直接使っているため、
+ * Tailwind v4 の @theme でスケールそのものを上書きすることで、
+ * 個々のファイルを触らずに全画面のトーンを切り替えられるようにしている。
+ * 配色を戻したい場合は、このファイルの @theme ブロックを消すだけでよい。
  */
 :root {
-  --background: #0a0e1a; /* ページ全体の背景 */
-  --surface: #0f172a; /* カード等の面 */
-  --foreground: #f1f5f9; /* 基本テキスト */
+  --background: #04080f; /* ページ全体の背景(最も深い海) */
+  --surface: #0a1420; /* カード等の面 */
+  --foreground: #e9f1f5; /* 基本テキスト */
   --font-sans: var(--font-noto-sans-jp), var(--font-inter), sans-serif;
 }
 
@@ -19,6 +25,32 @@
   --font-sans: var(--font-sans);
 }
 
+@theme {
+  /* ベース: 青灰色から、緑みを含んだ濃紺(海)へ */
+  --color-slate-50: #f5fafc;
+  --color-slate-100: #e9f1f5;
+  --color-slate-200: #d2e0e8;
+  --color-slate-300: #aec2ce;
+  --color-slate-400: #8299a8;
+  --color-slate-500: #566d7e;
+  --color-slate-600: #354c5c;
+  --color-slate-700: #1f3341;
+  --color-slate-800: #14232f;
+  --color-slate-900: #0a1420;
+  --color-slate-950: #04080f;
+
+  /* アクセント: 空色から、より水に近いターコイズへ */
+  --color-sky-300: #6fe3f0;
+  --color-sky-400: #2ecfe4;
+  --color-sky-500: #0ab3cc;
+  --color-sky-600: #0891a8;
+
+  /* 差し色: 夕焼けのコーラル。多用せず、注目させたい一点にだけ使う */
+  --color-coral-300: #ffb59b;
+  --color-coral-400: #ff8a65;
+  --color-coral-500: #f9683a;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -27,5 +59,5 @@ body {
 
 /* フォーカスリングをブランドカラーで統一(アクセシビリティ) */
 :focus-visible {
-  outline-color: #38bdf8;
+  outline-color: #2ecfe4;
 }

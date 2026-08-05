@@ -17,6 +17,9 @@ export function HeroMatchCard({ match }: { match: Match }) {
         実際の視聴はユーザーが /live/[matchId] に遷移してから開始する設計。
       */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950" />
+      {/* 水面の照り返しと夕焼けを想起させる差し色。ヒーローだけに使う */}
+      <div className="absolute -left-32 -top-24 -z-10 h-96 w-96 rounded-full bg-sky-500/20 blur-3xl" />
+      <div className="absolute -bottom-32 right-0 -z-10 h-80 w-80 rounded-full bg-coral-500/10 blur-3xl" />
       <div className="absolute inset-0 -z-10 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent" />
 
       <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-16 sm:py-24">

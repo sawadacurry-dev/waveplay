@@ -5,6 +5,9 @@ export type IVSPlayerState =
   | "playing"
   | "buffering"
   | "ended"
+  // チャンネルは存在するが、配信ソフトから映像が送られていない状態。
+  // 試合前・試合間はこれが常態なので、エラーとは明確に区別する。
+  | "offline"
   | "error";
 
 export interface IVSPlayerQuality {
