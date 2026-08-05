@@ -73,14 +73,27 @@ cp .env.example .env.local
   既読状態は `components/layout/NotificationBell.tsx` のローカル状態で、リロードで戻る。
 - **大会** — 大会を独立したエンティティとして持たず、試合の `tournamentName` で
   グルーピングして `getTournaments()` が組み立てている。
+- **通知登録** — `components/match/NotifyButton.tsx`。押した状態はローカル state のみで
+  リロードすると戻る。Phase2で「フォロー」APIへのPOSTに差し替える。
 
 ### 未実装(意図的にスコープ外)
 
 - アーカイブの実再生
 - 大会詳細ページ(組み合わせ表・順位表)。一覧カードは検索画面に大会名を渡す形で代用
-- 選手プロフィールページ(`/players` — フッターにリンクがあるが未実装で404)
+- 選手プロフィール、ヘルプ、プライバシー、利用規約、お問い合わせの各ページ
+  (フッターでは「準備中」と表示し、リンクにしていない)
 - 視聴履歴、お気に入り、フォロー
-- スケジュール行の「通知」ボタン(表示のみで動作しない)
+
+### 実装上の注意
+
+- **日時は必ず `lib/utils.ts` の `formatTimeJST()` / `formatDateJST()` を使う。**
+  `toLocaleTimeString` を直接呼ぶと実行環境のタイムゾーンで描画され、UTCで動く
+  Vercel上では9時間ずれる。開発機は日本時間なのでローカルでは再現しない。
+- **ページ内リンクは `<a>` ではなく `next/link` の `<Link>` を使う。**
+  `<a>` だとフルリロードになりクライアント遷移の利点が消える。
+- **`?redirect=` のようなURL由来の遷移先は必ず検証する。**
+  外部URLをそのまま `router.push()` に渡すとオープンリダイレクトになる
+  (`components/auth/LoginForm.tsx` の `safeRedirect()` 参照)。
 
 ## ディレクトリ構成
 
