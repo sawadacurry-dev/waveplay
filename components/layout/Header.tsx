@@ -2,7 +2,6 @@ import Link from "next/link";
 import { Search, Waves } from "lucide-react";
 import { HeaderAuthArea } from "@/components/layout/HeaderAuthArea";
 import { NotificationBell } from "@/components/layout/NotificationBell";
-import { MobileNav } from "@/components/layout/MobileNav";
 import { NAV_ITEMS } from "@/constants/nav";
 import { getNotifications } from "@/lib/api/notifications";
 
@@ -13,7 +12,8 @@ export async function Header({ liveCount }: { liveCount: number }) {
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/5 bg-slate-950/80 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4 sm:px-6">
+      {/* レール(px-4 / sm:px-6 / lg:px-10)と左右の基準線を揃える */}
+      <div className="flex h-16 items-center justify-between gap-2 px-4 sm:px-6 lg:px-10">
         <Link href="/" className="flex items-center gap-2 font-bold text-slate-100">
           <Waves className="h-5 w-5 text-sky-400" />
           WAVEPLAY
@@ -46,7 +46,6 @@ export async function Header({ liveCount }: { liveCount: number }) {
           </Link>
           <NotificationBell notifications={notifications} />
           <HeaderAuthArea />
-          <MobileNav />
         </div>
       </div>
     </header>

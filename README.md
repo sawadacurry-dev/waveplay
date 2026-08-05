@@ -46,7 +46,7 @@ cp .env.example .env.local
 
 | ルート | 内容 | データ |
 |---|---|---|
-| `/` | トップ(ヒーロー注目試合 / ライブ配信中一覧 / 本日のスケジュール / 統計バー) | モック |
+| `/` | トップ(ビルボード + カテゴリ別の横スクロールレール) | モック |
 | `/live/[matchId]` | ライブ視聴。AWS IVS Player SDKによる**実再生**、配信待機表示・全画面・画質切替、スコア・ライブコメント | 配信は実、その他モック |
 | `/schedule` | スケジュール一覧(スポーツ種目タブで絞り込み) | モック |
 | `/archive` | アーカイブ一覧 | モック |
@@ -108,9 +108,10 @@ cp .env.example .env.local
 app/            ルーティング(App Router)
 components/
   ui/           汎用UIパーツ(Button, Badge, Card)
-  layout/       Header, Footer, HeaderAuthArea, NotificationBell
+  layout/       Header, Footer, HeaderAuthArea, NotificationBell, BottomTabBar
+  rail/         ContentRail, MatchTile (トップページの横スクロールレール)
   player/       IVSPlayer, ViewerCount
-  match/        HeroMatchCard, LiveMatchCard, ScoreBoard, ScheduleRow, StatsBar等
+  match/        BillboardHero, LiveMatchCard, ScoreBoard, ScheduleRow, StatsBar等
   archive/      ArchiveCard
   auth/         LoginForm, AccountView
   pricing/      PricingTable, CheckoutView
@@ -130,15 +131,34 @@ constants/      スポーツ種目のラベル・カラー定義
 
 ## デザインシステム
 
-配色は「深い海 + ターコイズ + 夕焼けのコーラル」。各コンポーネントは `slate-*` /
-`sky-*` のユーティリティを直接使っているため、`app/globals.css` の `@theme` で
-**スケールそのものを上書き**することで、個々のファイルを触らずに全画面のトーンを
-切り替えている。配色を戻したい場合はこの `@theme` ブロックを消せばよい。
+### UXの方針
 
-`app/globals.css` の `@theme inline` にトークンを集約(Tailwind v4方式)。
+大手スポーツ配信サービスで一般的な**コンテンツ先行型**の構成を採っている。
+
+- **ビルボード** — トップ最上部に注目試合を全幅・大きく置き、下端を背景へ溶かして
+  レールへ繋げる(`components/match/BillboardHero.tsx`)
+- **レール** — カテゴリごとにタイルを横一列に並べ、横スクロールで送る
+  (`components/rail/ContentRail.tsx`)。タッチはスワイプ、デスクトップは端の矢印、
+  キーボードはスクロールコンテナ自体をフォーカスして矢印キーで操作できる
+- **16:9タイル** — ライブ・配信予定・アーカイブを1つのコンポーネントで扱い、
+  status に応じてバッジと遷移先だけ出し分ける(`components/rail/MatchTile.tsx`)
+- **ボトムタブ** — md未満では画面下部に固定タブを置く
+  (`components/layout/BottomTabBar.tsx`)。片手で届き、ハンバーガーのように
+  「開く」操作を挟まない
+
+### 配色
+
+背景は色味を持たないニュートラルな黒基調(`#08090b`)。背景が無彩色に近いほど
+サムネイル映像の色が濁らず、コンテンツが主役になる。アクセントはターコイズ、
+差し色に夕焼けのコーラルを一点だけ使う。
+
+各コンポーネントは `slate-*` / `sky-*` のユーティリティを直接使っているため、
+`app/globals.css` の `@theme` で**スケールそのものを上書き**することで、個々の
+ファイルを触らずに全画面のトーンを切り替えている。配色を戻したい場合は
+この `@theme` ブロックを消せばよい。
+
 フォントは英数字用に Inter、日本語用に Noto Sans JP を `next/font/google` で
-最適化配信。カラーはFigmaのダークテーマ(ネイビー背景 + スカイブルーのアクセント)を
-そのまま踏襲し、スポーツ種目ごとのバッジ色は `constants/sports.ts` に集約。
+最適化配信。スポーツ種目ごとのバッジ色は `constants/sports.ts` に集約。
 
 ## 開発時の確認コマンド
 

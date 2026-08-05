@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth/AuthProvider";
+import { BottomTabBar } from "@/components/layout/BottomTabBar";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -31,8 +32,12 @@ export default function RootLayout({
       lang="ja"
       className={`${inter.variable} ${notoSansJP.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-background text-foreground">
-        <AuthProvider>{children}</AuthProvider>
+      {/* pb-16 は固定のボトムタブバー(md未満のみ表示)に隠れないための余白 */}
+      <body className="flex min-h-full flex-col bg-background pb-16 text-foreground md:pb-0">
+        <AuthProvider>
+          {children}
+          <BottomTabBar />
+        </AuthProvider>
       </body>
     </html>
   );

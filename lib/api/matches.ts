@@ -2,6 +2,7 @@ import {
   SPORT_LABELS,
   type HomeStats,
   type Match,
+  type SportCategory,
   type Tournament,
 } from "@/types/match";
 
@@ -259,6 +260,33 @@ export async function searchAll(query: string): Promise<Match[]> {
       .toLowerCase();
     return haystack.includes(q);
   });
+}
+
+export interface SportRail {
+  sport: SportCategory;
+  label: string;
+  matches: Match[];
+}
+
+/**
+ * トップページの種目別レール用。
+ * 配信予定・録画・アーカイブを種目ごとにまとめて返す。
+ * 中身が無い種目(まだ試合が登録されていない種目)は返さない。
+ */
+export async function getSportRails(): Promise<SportRail[]> {
+  const all = [...MOCK_MATCHES, ...MOCK_ARCHIVES];
+
+  return (Object.keys(SPORT_LABELS) as SportCategory[])
+    .map((sport) => ({
+      sport,
+      label: SPORT_LABELS[sport],
+      matches: all.filter((m) => m.sport === sport),
+    }))
+    .filter((rail) => rail.matches.length > 0);
+}
+
+export async function getUpcomingMatches(): Promise<Match[]> {
+  return MOCK_MATCHES.filter((m) => m.status === "upcoming");
 }
 
 export async function getTournaments(): Promise<Tournament[]> {

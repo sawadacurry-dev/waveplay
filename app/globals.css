@@ -12,9 +12,9 @@
  * 配色を戻したい場合は、このファイルの @theme ブロックを消すだけでよい。
  */
 :root {
-  --background: #04080f; /* ページ全体の背景(最も深い海) */
-  --surface: #0a1420; /* カード等の面 */
-  --foreground: #e9f1f5; /* 基本テキスト */
+  --background: #08090b; /* ページ全体の背景(映像を主役にする漆黒) */
+  --surface: #121316; /* カード・タイルの面 */
+  --foreground: #f2f4f6; /* 基本テキスト */
   --font-sans: var(--font-noto-sans-jp), var(--font-inter), sans-serif;
 }
 
@@ -26,18 +26,21 @@
 }
 
 @theme {
-  /* ベース: 青灰色から、緑みを含んだ濃紺(海)へ */
-  --color-slate-50: #f5fafc;
-  --color-slate-100: #e9f1f5;
-  --color-slate-200: #d2e0e8;
-  --color-slate-300: #aec2ce;
-  --color-slate-400: #8299a8;
-  --color-slate-500: #566d7e;
-  --color-slate-600: #354c5c;
-  --color-slate-700: #1f3341;
-  --color-slate-800: #14232f;
-  --color-slate-900: #0a1420;
-  --color-slate-950: #04080f;
+  /*
+   * ベース: 映像配信サービスらしく、色味を持たないニュートラルな黒基調へ。
+   * 背景が無彩色に近いほどサムネイル映像の色が濁らず、コンテンツが主役になる。
+   */
+  --color-slate-50: #fafbfb;
+  --color-slate-100: #f2f4f6;
+  --color-slate-200: #dfe2e6;
+  --color-slate-300: #bcc1c8;
+  --color-slate-400: #8f959e;
+  --color-slate-500: #6b717a;
+  --color-slate-600: #464b53;
+  --color-slate-700: #2e3238;
+  --color-slate-800: #1d2024;
+  --color-slate-900: #121316;
+  --color-slate-950: #08090b;
 
   /* アクセント: 空色から、より水に近いターコイズへ */
   --color-sky-300: #6fe3f0;
