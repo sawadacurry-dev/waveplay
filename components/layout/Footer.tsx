@@ -1,6 +1,11 @@
 import Link from "next/link";
 import { Waves } from "lucide-react";
 
+/**
+ * `comingSoon` が付いた項目はまだページが存在しない。リンクにすると404に
+ * 飛んでしまうため、リンクではなく「準備中」のテキストとして描画する。
+ * Phase2でページを作ったら、この印を消すだけでリンクに戻る。
+ */
 const FOOTER_COLUMNS = [
   {
     title: "サービス",
@@ -8,7 +13,7 @@ const FOOTER_COLUMNS = [
       { href: "/", label: "ライブ中継" },
       { href: "/archive", label: "アーカイブ" },
       { href: "/tournaments", label: "大会情報" },
-      { href: "/players", label: "選手プロフィール" },
+      { href: "/players", label: "選手プロフィール", comingSoon: true },
     ],
   },
   {
@@ -23,10 +28,10 @@ const FOOTER_COLUMNS = [
   {
     title: "サポート",
     links: [
-      { href: "/help", label: "ヘルプセンター" },
-      { href: "/privacy", label: "プライバシー" },
-      { href: "/terms", label: "利用規約" },
-      { href: "/contact", label: "お問い合わせ" },
+      { href: "/help", label: "ヘルプセンター", comingSoon: true },
+      { href: "/privacy", label: "プライバシー", comingSoon: true },
+      { href: "/terms", label: "利用規約", comingSoon: true },
+      { href: "/contact", label: "お問い合わせ", comingSoon: true },
     ],
   },
 ];
@@ -51,12 +56,21 @@ export function Footer() {
             <ul className="space-y-2">
               {col.links.map((link) => (
                 <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-slate-500 transition hover:text-slate-300"
-                  >
-                    {link.label}
-                  </Link>
+                  {"comingSoon" in link && link.comingSoon ? (
+                    <span className="flex items-center gap-1.5 text-sm text-slate-600">
+                      {link.label}
+                      <span className="rounded bg-white/5 px-1.5 py-0.5 text-[10px] text-slate-500">
+                        準備中
+                      </span>
+                    </span>
+                  ) : (
+                    <Link
+                      href={link.href}
+                      className="text-sm text-slate-500 transition hover:text-slate-300"
+                    >
+                      {link.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>

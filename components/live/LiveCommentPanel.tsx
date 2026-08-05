@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Send } from "lucide-react";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { Card } from "@/components/ui/Card";
@@ -29,6 +29,14 @@ export function LiveCommentPanel() {
   const { user } = useAuth();
   const [comments, setComments] = useState<Comment[]>(SEED_COMMENTS);
   const [draft, setDraft] = useState("");
+  const listRef = useRef<HTMLDivElement>(null);
+
+  // 新しいコメントは末尾に追加されるため、追加のたびに最下部へ送る。
+  // これが無いと自分の投稿がスクロール外に隠れて見えない。
+  useEffect(() => {
+    const list = listRef.current;
+    if (list) list.scrollTop = list.scrollHeight;
+  }, [comments]);
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -47,7 +55,7 @@ export function LiveCommentPanel() {
         <h2 className="text-sm font-semibold text-slate-200">ライブコメント</h2>
       </div>
 
-      <div className="flex-1 space-y-3 overflow-y-auto px-4 py-3">
+      <div ref={listRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-3">
         {comments.map((c) => (
           <div key={c.id} className="text-sm">
             <span className="font-semibold text-sky-400">{c.author}</span>

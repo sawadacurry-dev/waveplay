@@ -3,12 +3,25 @@ import { Footer } from "@/components/layout/Footer";
 import { ScheduleList } from "@/components/match/ScheduleList";
 import { getHomeStats, getTodaySchedule } from "@/lib/api/matches";
 import { formatDateJST } from "@/lib/utils";
+import { SPORT_FILTERS } from "@/constants/sports";
+import type { SportCategory } from "@/types/match";
 
-export default async function SchedulePage() {
-  const [schedule, stats] = await Promise.all([
+interface SchedulePageProps {
+  // フッターから /schedule?sport=beach-volleyball のように種目指定で来る
+  searchParams: Promise<{ sport?: string }>;
+}
+
+export default async function SchedulePage({ searchParams }: SchedulePageProps) {
+  const [{ sport }, schedule, stats] = await Promise.all([
+    searchParams,
     getTodaySchedule(),
     getHomeStats(),
   ]);
+
+  // 不正な値がURLに入っていても落とさず「すべて」にフォールバックする
+  const initialSport = SPORT_FILTERS.some((f) => f.value === sport)
+    ? (sport as SportCategory)
+    : "all";
 
   return (
     <>
@@ -27,7 +40,7 @@ export default async function SchedulePage() {
             })}
           </p>
 
-          <ScheduleList matches={schedule} />
+          <ScheduleList matches={schedule} initialSport={initialSport} />
         </div>
       </main>
 

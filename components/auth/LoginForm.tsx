@@ -7,11 +7,21 @@ import { Waves } from "lucide-react";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { Button } from "@/components/ui/Button";
 
+/**
+ * ?redirect= は外部サイトへの誘導(オープンリダイレクト)に悪用できるため、
+ * 同一サイト内の絶対パスだけを許可する。
+ * "//evil.com" はブラウザからはプロトコル相対URLとして外部扱いになるので弾く。
+ */
+function safeRedirect(value: string | null): string {
+  if (!value || !value.startsWith("/") || value.startsWith("//")) return "/";
+  return value;
+}
+
 export function LoginForm() {
   const { login } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirect") || "/";
+  const redirectTo = safeRedirect(searchParams.get("redirect"));
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

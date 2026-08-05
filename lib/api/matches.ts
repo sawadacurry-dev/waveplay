@@ -206,8 +206,10 @@ const MOCK_ARCHIVES: Match[] = [
 
 // --- 公開API(モック実装) -------------------------------------------------
 
-export async function getHeroMatch(): Promise<Match> {
-  return MOCK_MATCHES.find((m) => m.status === "live")!;
+// ライブ配信が1件も無い時間帯は存在しうるので undefined を返しうる。
+// 呼び出し側で「注目試合なし」の表示を出し分けること。
+export async function getHeroMatch(): Promise<Match | undefined> {
+  return MOCK_MATCHES.find((m) => m.status === "live");
 }
 
 export async function getLiveMatches(): Promise<Match[]> {

@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { Bell, Play, Video } from "lucide-react";
+import { Play, Video } from "lucide-react";
 import type { Match } from "@/types/match";
 import { SPORT_LABELS } from "@/types/match";
 import { SPORT_BADGE_STYLES } from "@/constants/sports";
 import { SportBadge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { NotifyButton } from "@/components/match/NotifyButton";
 import { cn, formatTimeJST } from "@/lib/utils";
 
 export function ScheduleRow({ match }: { match: Match }) {
@@ -55,9 +56,9 @@ export function ScheduleRow({ match }: { match: Match }) {
           </Link>
         )}
         {match.status === "upcoming" && (
-          <Button variant="secondary" icon={<Bell className="h-4 w-4" />}>
-            通知
-          </Button>
+          <NotifyButton
+            matchLabel={`${match.home.name} vs ${match.away.name}`}
+          />
         )}
       </div>
     </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Lock, ShieldCheck } from "lucide-react";
@@ -14,6 +14,15 @@ export function CheckoutView() {
   const router = useRouter();
   const { user, subscribe } = useAuth();
   const [isProcessing, setIsProcessing] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // 処理中に別ページへ移動された場合、あとから router.push が走って
+  // 意図しない画面遷移が起きるのを防ぐ
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   const planId = searchParams.get("plan") as PlanId | null;
   const plan = PLANS.find((p) => p.id === planId);
@@ -52,7 +61,7 @@ export function CheckoutView() {
     // カード番号の入力欄をこのアプリ側で持たないことで、PCI DSS対応の
     // 範囲を最小化できる。
     // ------------------------------------------------------------------
-    setTimeout(() => {
+    timerRef.current = setTimeout(() => {
       if (plan) subscribe(plan.id);
       router.push("/account");
     }, 800);

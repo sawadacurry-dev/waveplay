@@ -6,8 +6,16 @@ import { SPORT_FILTERS } from "@/constants/sports";
 import { ScheduleRow } from "@/components/match/ScheduleRow";
 import { cn } from "@/lib/utils";
 
-export function ScheduleList({ matches }: { matches: Match[] }) {
-  const [activeFilter, setActiveFilter] = useState<SportCategory | "all">("all");
+export function ScheduleList({
+  matches,
+  initialSport = "all",
+}: {
+  matches: Match[];
+  initialSport?: SportCategory | "all";
+}) {
+  const [activeFilter, setActiveFilter] = useState<SportCategory | "all">(
+    initialSport
+  );
 
   const filtered =
     activeFilter === "all"
